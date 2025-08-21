@@ -19,9 +19,55 @@ const createIntensity = async(req,res) =>{
         
     } catch (error) {
         res.status(500).json({
+            success: false,
             error: error
         });
     }
 }
 
-module.exports = {createIntensity}
+const getAllIntensities = async (req,res) => {
+    try {
+        const intensities = await intensityM.getAll();
+        if(intensities.length === 0){
+            return res.status(404).json({
+                success: false,
+                error: "NOT_FOUND",
+                msg : "error finding coffee intensities"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: intensities
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            error: error
+        });
+    }
+}
+const getIntensityById = async(req,res) => {
+    try {
+        const {id} = req.params;
+        const intensity = await intensityM.getIntensity(id);
+        if(intensity.length === 0){
+            return res.status(404).json({
+                success:false,
+                error: "NOT_FOUND",
+                msg:"coffee intensity not found"
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: intensity
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error
+        });
+    }
+}
+
+module.exports = {createIntensity,getAllIntensities,getIntensityById}
