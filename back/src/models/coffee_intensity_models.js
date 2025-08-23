@@ -12,19 +12,22 @@ const create = async(name, strength, icon) =>{
 const getAll = async () => {
     const query = "SELECT name, strength, icon FROM coffee_intensity ORDER BY strength ASC";
     const [result] = await pool.query(query);
-    if(result.length === 0){
-        return result;
-    }
     return result;
 }
 
 const getIntensity = async (id) =>{
-    const query = "SELECT name, strength, icon FROM coffee_intensity WHERE id = ?";
+    const query = "SELECT id, name, strength, icon FROM coffee_intensity WHERE id = ? LIMIT 1";
     const [result] = await pool.query(query,[id]);
-    if(result.length === 0){
-        return result;
-    }
-    return result[0];
+    return result[0] ? result[0] : null;
 }
 
-module.exports = {create, getAll, getIntensity}
+const intensityUpdate = async (id, name, strength, icon) => {
+    const query = "UPDATE coffee_intensity SET name = ?, strength = ?, icon = ? WHERE id = ?"
+    const [result] = await pool.query(query, [name, strength, icon, id]);
+    if(result.affectedRows === 0){
+        return false;
+    }
+    return result.affectedRows;
+}
+
+module.exports = {create, getAll, getIntensity, intensityUpdate}

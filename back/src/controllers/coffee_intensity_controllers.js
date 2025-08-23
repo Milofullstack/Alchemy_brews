@@ -18,9 +18,11 @@ const createIntensity = async(req,res) =>{
 
         
     } catch (error) {
-        res.status(500).json({
+        console.log(error);
+        return res.status(500).json({
             success: false,
-            error: error
+            error: "INTERNAL_ERROR",
+            msg: "Internal Server Error"
         });
     }
 }
@@ -41,9 +43,11 @@ const getAllIntensities = async (req,res) => {
         });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             success: false,
-            error: error
+            error: "INTERNAL_ERROR",
+            msg: "Internal Server Error"
         });
     }
 }
@@ -63,11 +67,41 @@ const getIntensityById = async(req,res) => {
             data: intensity
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                error: "INTERNAL_ERROR",
+                msg: "Internal Server Error"
+            });
+        }
+}
+const updateIntensity= async (req,res) => {
+    try {
+        const {id} = req.params;
+        const {name, strength, icon} = req.body;
+        const intensityUpdated = await intensityM.intensityUpdate(id,name,strength,icon);
+        if(!intensityUpdated){
+            return res.status(400).json({
+                success:false,
+                error: "DB_ERROR",
+                msg:"error updating coffee intensity"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            msg: "intensity updated successfully"
         });
+        
+    } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                error: "INTERNAL_ERROR",
+                msg: "Internal Server Error"
+            });
+        
     }
 }
 
-module.exports = {createIntensity,getAllIntensities,getIntensityById}
+module.exports = {createIntensity,getAllIntensities,getIntensityById, updateIntensity}

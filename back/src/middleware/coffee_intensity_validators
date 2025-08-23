@@ -1,0 +1,16 @@
+function validateCreateIntensity (req, res, next){
+    let {name, strength, icon} = req.body;
+    if(!name || !strength || !icon){
+        res.status(400).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: " all fields are required"
+        });
+    }
+    name = name.toLowerCase();
+    if(typeof name !== "string"){
+
+    }
+}
+
+module.exports = {validateCreateIntensity}
