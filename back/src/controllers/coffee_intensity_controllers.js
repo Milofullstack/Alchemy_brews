@@ -55,7 +55,7 @@ const getIntensityById = async(req,res) => {
     try {
         const {id} = req.params;
         const intensity = await intensityM.getIntensity(id);
-        if(intensity.length === 0){
+        if(!intensity){
             return res.status(404).json({
                 success:false,
                 error: "NOT_FOUND",

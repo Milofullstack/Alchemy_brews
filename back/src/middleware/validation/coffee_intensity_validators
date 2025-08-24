@@ -1,0 +1,91 @@
+function validateCreateIntensity (req, res, next){
+  try {  
+    let {name, strength, icon} = req.body;
+    if(name === undefined || strength === undefined || icon === undefined ){
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "all fields are required"
+        });
+    }
+    if(typeof name !== "string"){
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "name must be a string"
+        });
+    }
+    name = name.trim();
+
+    if(name.length <2 || name.length > 50){
+
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "name length must be between 2 and 50 characters"
+        });
+    }
+
+
+    strength = Number(strength);
+    if(!Number.isInteger(strength) || strength <1 || strength > 5 ){
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "strength must be an integer between 1 and 5"
+        });
+    }
+
+    if(typeof icon !=="string"){
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "icon must be a string"
+        });
+
+    }
+    icon = icon.trim();
+    if(icon.length === 0 || icon.length > 16){
+        return res.status(422).json({
+            success:false,
+            error: "VALIDATION_ERROR",
+            msg: "icon must be short string between 1 and 16 characters"
+        });
+
+    }
+    req.body = {name, strength, icon};
+    
+    return next();
+    
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+        success:false,
+        error: "INTERNAL_ERROR",
+        msg: "internal server error"
+    })
+  }
+}
+
+function validateParamId(req,res,next){
+ let {id} = req.params;
+ if(id === undefined || id === null){
+    return res.status(422).json({
+        success:false,
+        error:"VALIDATION_ERROR",
+        msg:"id is required"
+    });
+ }
+ id = Number(id);
+ if(!Number.isInteger(id) || id < 1){
+    return res.status(422).json({
+        success:false,
+        error:"VALIDATION_ERROR",
+        msg:"id must be a positive integer"
+    });
+ }
+ req.params.id = id;
+ return next();
+}
+
+module.exports = { validateCreateIntensity, validateParamId }
